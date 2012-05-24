@@ -110,18 +110,28 @@ window.addEventListener("DOMContentLoaded", function () {
 //Delete the information from the local Storage.   
     function eraseInformation () {
         if (localStorage.length === 0){
-            alert("You haven't stored any Assignment Information!");
+            alert("You haven't stored any Assignment Information to erase.");
         } else {
             localStorage.clear();//Delete everything in the localStorage.
-            alert("All of your Assignment Information have been deleted");
+            alert("All of your Assignment Information have been deleted.");
             window.location.reload();
             return false;//Stopping the link to go anywhere when reloaded.
         }
     }
+//Automatically fills in the form if empty as a default.
+//All the default information that is going to be display is coming from the json file.
+    function autoDefaultInfo () {
+        for (var d in jsonObject) {
+            var defaultID = Math.floor(Math.random()*1010001921);
+            localStorage.setItem(defaultID, JSON.stringify(jsonObject[d]));
+        }
+
+    }
 //Safety check dor the display option.
     function displayCheck () {
         if (localStorage.length === 0){
-            alert("No Assignments have been saved!");
+            alert("No Assignments have been saved so default information was added.");
+            autoDefaultInfo();
         }
     }
 //The event listener function to validate the fields and not saving the edited items.
@@ -285,6 +295,7 @@ window.addEventListener("DOMContentLoaded", function () {
             var localStorageObject = JSON.parse(keyValue);
             var anotherUnorderListTag = makeTag('ul');
             createFirstListTag.appendChild(anotherUnorderListTag);
+            getMajorIcons(localStorageObject.major[1], anotherUnorderListTag);
             for (var s in localStorageObject) {
                 var createAnotherList = makeTag('li');
                 anotherUnorderListTag.appendChild(createAnotherList);
@@ -297,6 +308,16 @@ window.addEventListener("DOMContentLoaded", function () {
         }
          var breakTag = makeTag('br');
         breakTag.innerHTML = createDiv;
+    }
+//This function is being called within the getInfoToDisplay function to get the correct icon of the major that was chosen.
+    function getMajorIcons (major, list) {
+        var iconList = makeTag('li');
+        list.appendChild(iconList);
+        var newIcon = makeTag('img');
+        newIcon.id = 'icon';
+        var IconAttribute = newIcon.setAttribute("src", "images/" + major + ".png");
+        iconList.appendChild(newIcon);
+
     }
 //Main Event Listeners
     linkOfClear.addEventListener("click", eraseInformation);
